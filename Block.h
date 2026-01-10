@@ -53,7 +53,8 @@ bool AvlBlock<T>::operator<(const AvlBlock* comp)const {
 template<typename T>
 struct RankBlock : public AvlBlock<T>{
   int rank;
-  explicit RankBlock(const T& data) : AvlBlock<T>(data), rank(1) {}
+  int subTreeSize;
+  explicit RankBlock(const T& data) : AvlBlock<T>(data), rank(1), subTreeSize(1) {}
 
   void Update() override;
 };
@@ -62,5 +63,10 @@ struct RankBlock : public AvlBlock<T>{
 template<typename T>
 void RankBlock<T>::Update() {
   AvlBlock<T>::Update();
-  this->rank = this->left == nullptr ? 1 : static_cast<RankBlock<T>*>(this->left)->rank + 1;
+
+  subTreeSize = 1 + 
+   this->left == nullptr ? 0 : static_cast<RankBlock<T>*>(this->left)->subTreeSize +
+   this->right == nullptr ? 0 : static_cast<RankBlock<T>*>(this->right)->subTreeSize;
+
+  this->rank = this->left == nullptr ? 1 : static_cast<RankBlock<T>*>(this->left)->subTreeSize + 1;
 }

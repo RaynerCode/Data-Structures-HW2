@@ -16,7 +16,7 @@ class AvlTree : public Tree<T, Block>{
     Block* LRroll(Block*& parent, Block* child);
     Block* RLroll(Block*& parent, Block* child);
     Block* RRroll(Block*& parent, Block* child);
-    virtual void Update(Stack<Block*>& path);
+    void Update(Stack<Block*>& path);
     void Reconnect(Block* block, Stack<Block*>& path);
     virtual void Remove(Block*& toRem, Stack<Block*>& path);
     Block*& GetMin(Block* toRem, Stack<Block*>& path);

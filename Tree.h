@@ -30,8 +30,8 @@ class Tree{
 
   //for debug only
   private:
-    void PrintInOrder(const Block* root) const;
-    void PrintPreOrder(const Block* root) const;
+    virtual void PrintInOrder(const Block* root) const;
+    virtual void PrintPreOrder(const Block* root) const;
   public:
     void PrintInOrder() const;
     void PrintPreOrder() const;
