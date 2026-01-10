@@ -1,6 +1,7 @@
 #pragma once
 #include<stdexcept>
 #include "Block.h"
+#include<iostream>
 
 template<typename T, typename Block = BaseBlock<T>>
 class Tree{
@@ -25,6 +26,15 @@ class Tree{
     Block* CreateBlock(const T& data);
     Block* GetBlock(const T& t) const;
     Block*& GetMin(Block*& curr) const;
+
+
+  //for debug only
+  private:
+    void PrintInOrder(const Block* root) const;
+    void PrintPreOrder(const Block* root) const;
+  public:
+    void PrintInOrder() const;
+    void PrintPreOrder() const;
   };
 
 //Tree methods
@@ -190,4 +200,34 @@ Block*& Tree<T, Block>::GetMin(Block*& curr) const{
 template<typename T, typename Block>
 bool Tree<T, Block>::IsEmpty() const {
   return root == nullptr;
+}
+
+//for debug only
+template<typename T, typename Block>
+void Tree<T, Block>::PrintInOrder() const {
+    PrintInOrder(this->root);
+}
+
+template<typename T, typename Block>
+void Tree<T, Block>::PrintPreOrder() const {
+    PrintPreOrder(this->root);
+}
+
+template<typename T, typename Block>
+void Tree<T, Block>::PrintInOrder(const Block* root) const {
+    if(root == nullptr)
+      return;
+    PrintInOrder(root->left);
+    std::cout << root->data << " ";
+    PrintInOrder(root->right);
+}
+
+template<typename T, typename Block>
+void Tree<T, Block>::PrintPreOrder(const Block* root) const {
+    if(root == nullptr)
+      return;
+    std::cout << root->data << " ";
+    PrintPreOrder(root->left);
+    PrintPreOrder(root->right);
+
 }
