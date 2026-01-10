@@ -2,31 +2,31 @@
 #include "Tree.h"
 #include "Stack.h"
 
-template<typename T>
-class AvlTree : public Tree<T, AvlBlock<T>>{
+template<typename T, typename Block = AvlBlock<T>>
+class AvlTree : public Tree<T, Block>{
     public:
-    AvlTree() : Tree<T, AvlBlock<T>>(){}
-    void Add(const T& data) override;
+    AvlTree() : Tree<T, Block>(){}
+    virtual void Add(const T& data) override;
     void Remove(const T& id) override;
 
     private:
-    AvlBlock<T>* Lroll(AvlBlock<T>* parent);
-    AvlBlock<T>* Rroll(AvlBlock<T>* parent);
-    AvlBlock<T>* LLroll(AvlBlock<T>*& parent, AvlBlock<T>* child);
-    AvlBlock<T>* LRroll(AvlBlock<T>*& parent, AvlBlock<T>* child);
-    AvlBlock<T>* RLroll(AvlBlock<T>*& parent, AvlBlock<T>* child);
-    AvlBlock<T>* RRroll(AvlBlock<T>*& parent, AvlBlock<T>* child);
-    void Update(Stack<AvlBlock<T>*>& path);
-    void Reconnect(AvlBlock<T>* block, Stack<AvlBlock<T>*>& path);
-    void Remove(AvlBlock<T>*& toRem, Stack<AvlBlock<T>*>& path);
-    AvlBlock<T>*& GetMin(AvlBlock<T>* toRem, Stack<AvlBlock<T>*>& path);
+    Block* Lroll(Block* parent);
+    Block* Rroll(Block* parent);
+    Block* LLroll(Block*& parent, Block* child);
+    Block* LRroll(Block*& parent, Block* child);
+    Block* RLroll(Block*& parent, Block* child);
+    Block* RRroll(Block*& parent, Block* child);
+    virtual void Update(Stack<Block*>& path);
+    void Reconnect(Block* block, Stack<Block*>& path);
+    virtual void Remove(Block*& toRem, Stack<Block*>& path);
+    Block*& GetMin(Block* toRem, Stack<Block*>& path);
 };
 
 //public funcs implementation:
-template<typename T>
-void AvlTree<T>::Add(const T& data) {
-    Stack<AvlBlock<T>*> path;
-    AvlBlock<T>* curr = this->root;
+template<typename T, typename Block>
+void AvlTree<T, Block>::Add(const T& data) {
+    Stack<Block*> path;
+    Block* curr = this->root;
 
     //empty AvlTree
     if(curr == nullptr){
@@ -61,12 +61,11 @@ void AvlTree<T>::Add(const T& data) {
     Update(path);
 }
 
-
-template <typename T>
-void AvlTree<T>::Remove(const T& id){
+template<typename T, typename Block>
+void AvlTree<T, Block>::Remove(const T& id){
     //note: throughout this func toRem is the AvlBlock with data id
 
-    Stack<AvlBlock<T>*> path;
+    Stack<Block*> path;
 
     //if toREm is root - Remove root
     if(this->root->data == id){
@@ -76,7 +75,7 @@ void AvlTree<T>::Remove(const T& id){
     }
     
     //Search The Tree
-    AvlBlock<T>* curr = this->root;
+    Block* curr = this->root;
     while(true){
         if(curr == nullptr)
             throw(std::invalid_argument("data not found"));
@@ -118,8 +117,8 @@ void AvlTree<T>::Remove(const T& id){
 
 //private funcs implementation:
 
-template<typename T>
-AvlBlock<T>* AvlTree<T>::Lroll(AvlBlock<T>* parent){
+template<typename T, typename Block>
+Block* AvlTree<T, Block>::Lroll(Block* parent){
     if(parent->left->BF() != -1){
         return LLroll(parent, parent->left);
     }
@@ -128,8 +127,8 @@ AvlBlock<T>* AvlTree<T>::Lroll(AvlBlock<T>* parent){
     }
 }
 
-template<typename T>
-AvlBlock<T>* AvlTree<T>::Rroll(AvlBlock<T>* parent){
+template<typename T, typename Block>
+Block* AvlTree<T, Block>::Rroll(Block* parent){
     if(parent->right->BF() != 1){
         return RRroll(parent, parent->right);
     }
@@ -138,70 +137,70 @@ AvlBlock<T>* AvlTree<T>::Rroll(AvlBlock<T>* parent){
     }
 }
 
-template<typename T>
-AvlBlock<T>* AvlTree<T>::LLroll(AvlBlock<T>*& parent, AvlBlock<T>*child){
-    AvlBlock<T>* temp = parent;
+template<typename T, typename Block>
+Block* AvlTree<T, Block>::LLroll(Block*& parent, Block*child){
+    Block* temp = parent;
     parent = child;
     temp->left = child->right;
     child->right = temp;
-    temp->UpdateHeight();
-    child->UpdateHeight();
+    temp->Update();
+    child->Update();
     return parent;
 }
 
-template<typename T>
-AvlBlock<T>* AvlTree<T>::LRroll(AvlBlock<T>*& parent, AvlBlock<T>* child){
-    AvlBlock<T>* grandChild = child->right;
-    AvlBlock<T>* temp = parent;
+template<typename T, typename Block>
+Block* AvlTree<T, Block>::LRroll(Block*& parent, Block* child){
+    Block* grandChild = child->right;
+    Block* temp = parent;
     parent = grandChild;
     temp->left = grandChild->right;
     child->right = grandChild->left;
     grandChild->right = temp;
     grandChild->left = child;
-    temp->UpdateHeight();
-    child->UpdateHeight();
-    grandChild->UpdateHeight();
+    temp->Update();
+    child->Update();
+    grandChild->Update();
     return parent;
 }
 
-template<typename T>
-AvlBlock<T>* AvlTree<T>::RLroll(AvlBlock<T>*& parent, AvlBlock<T>* child){
-    AvlBlock<T>* grandChild = child->left;
-    AvlBlock<T>* temp = parent;
+template<typename T, typename Block>
+Block* AvlTree<T, Block>::RLroll(Block*& parent, Block* child){
+    Block* grandChild = child->left;
+    Block* temp = parent;
     parent = grandChild;
     temp->right = grandChild->left;
     child->left = grandChild->right;
     grandChild->left = temp;
     grandChild->right = child;
-    temp->UpdateHeight();
-    child->UpdateHeight();
-    grandChild->UpdateHeight();
+    temp->Update();
+    child->Update();
+    grandChild->Update();
     return parent;
 }
 
-template<typename T>
-AvlBlock<T>* AvlTree<T>::RRroll(AvlBlock<T>*& parent, AvlBlock<T>* child){
-    AvlBlock<T>* temp = parent;
+template<typename T, typename Block>
+Block* AvlTree<T, Block>::RRroll(Block*& parent, Block* child){
+    Block* temp = parent;
     parent = child;
     temp->right = child->left;
     child->left = temp;
-    temp->UpdateHeight();
-    child->UpdateHeight();
+    temp->Update();
+    child->Update();
     return parent;
 }
 
-template<typename T>
-void AvlTree<T>::Remove(AvlBlock<T>*& toRem, Stack<AvlBlock<T>*>& path){
+template<typename T, typename Block>
+void AvlTree<T, Block>::Remove(Block*& toRem, Stack<Block*>& path){
     //if toRem has one or fewer children
     if(toRem->left == nullptr){
-        const AvlBlock<T>* temp = toRem;
+        const Block* temp = toRem;
         toRem = toRem->right;
         //note that toRem is Block*& so the actual pointer in the parent will be changed
         delete temp;
         return;
     }
     else if(toRem->right == nullptr){
-        AvlBlock<T>* temp = toRem;
+        Block* temp = toRem;
         toRem = toRem->left;
         //similar to above
         delete temp;
@@ -209,14 +208,14 @@ void AvlTree<T>::Remove(AvlBlock<T>*& toRem, Stack<AvlBlock<T>*>& path){
     }
 
     //toRem has 2 children
-    AvlBlock<T>* temp = toRem;
+    Block* temp = toRem;
 
     //1: find substitute AvlBlock
-    Stack<AvlBlock<T>*> top;
-    AvlBlock<T>*& minRightSubtree = GetMin(toRem, top);
-    AvlBlock<T>* substitute = minRightSubtree;
+    Stack<Block*> top;
+    Block*& minRightSubtree = GetMin(toRem, top);
+    Block* substitute = minRightSubtree;
     path.Push(substitute);
-    Stack<AvlBlock<T>*>::Merge(path, top);
+    Stack<Block*>::Merge(path, top);
 
     //2: substitution
     {
@@ -228,32 +227,32 @@ void AvlTree<T>::Remove(AvlBlock<T>*& toRem, Stack<AvlBlock<T>*>& path){
     }
 }
 
-template<typename T>
-void AvlTree<T>::Update(Stack<AvlBlock<T>*>& path){
+template<typename T, typename Block>
+void AvlTree<T, Block>::Update(Stack<Block*>& path){
     while(!path.IsEmpty()){
-        AvlBlock<T>* curr = path.Pop();
-        curr->UpdateHeight();
+        Block* curr = path.Pop();
+        curr->Update();
         int BF = curr->BF();
         if(BF == 2){
-            AvlBlock<T>* newRoot = Lroll(curr);
+            Block* newRoot = Lroll(curr);
             Reconnect(newRoot, path);
             continue;
         }
         if(BF == -2){
-            AvlBlock<T>* newRoot = Rroll(curr);
+            Block* newRoot = Rroll(curr);
             Reconnect(newRoot, path);
             continue;
         }
     }
 }
 
-template<typename T>
-void AvlTree<T>::Reconnect(AvlBlock<T>* block, Stack<AvlBlock<T>*> &path){
+template<typename T, typename Block>
+void AvlTree<T, Block>::Reconnect(Block* block, Stack<Block*> &path){
     if(path.IsEmpty()){
         this->root = block;
         return;
     }
-    AvlBlock<T>* temp = path.Peek();
+    Block* temp = path.Peek();
     if(block->data < temp->data){
         temp->left = block;
     }
@@ -262,10 +261,10 @@ void AvlTree<T>::Reconnect(AvlBlock<T>* block, Stack<AvlBlock<T>*> &path){
     }
 }
 
-template<typename T>
-AvlBlock<T>*& AvlTree<T>::GetMin(AvlBlock<T>* toRem, Stack<AvlBlock<T>*>& path){
+template<typename T, typename Block>
+Block*& AvlTree<T, Block>::GetMin(Block* toRem, Stack<Block*>& path){
     if(toRem->right->left == nullptr) return toRem->right;
-    AvlBlock<T>* curr = toRem ->right;
+    Block* curr = toRem ->right;
     while(curr->left->left !=nullptr) { 
         path.Push(curr);
         curr = curr->left;

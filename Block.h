@@ -23,14 +23,15 @@ struct AvlBlock{
   T data;
   int height;
   explicit AvlBlock(const T& data) : right(nullptr), left(nullptr), data(data), height(0) {}
-  void UpdateHeight();
+  virtual ~AvlBlock() = default;
+  virtual void Update();
   int BF() const;
   bool operator <(const AvlBlock* comp) const;
 };
 
 //AvlBlock methods
 template<typename T>
-void AvlBlock<T>::UpdateHeight(){
+void AvlBlock<T>::Update(){
   int leftHeight = this->left == nullptr ? -1 : left->height;
   int rightHeight = this->right == nullptr ? -1 : right->height;
   this->height = 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
@@ -46,4 +47,20 @@ int AvlBlock<T>::BF() const{
 template<typename T>
 bool AvlBlock<T>::operator<(const AvlBlock* comp)const {
   return this->data < comp->data;
+}
+
+//RankBlock
+template<typename T>
+struct RankBlock : public AvlBlock<T>{
+  int rank;
+  explicit RankBlock(const T& data) : AvlBlock<T>(data), rank(1) {}
+
+  void Update() override;
+};
+
+//RankBlock methods
+template<typename T>
+void RankBlock<T>::Update() {
+  AvlBlock<T>::Update();
+  this->rank = this->left == nullptr ? 1 : static_cast<RankBlock<T>*>(this->left)->rank + 1;
 }
