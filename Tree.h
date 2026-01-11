@@ -29,7 +29,7 @@ class Tree{
 
 
   //for debug only
-  private:
+  protected:
     virtual void PrintInOrder(const Block* root) const;
     virtual void PrintPreOrder(const Block* root) const;
   public:

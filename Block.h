@@ -1,3 +1,5 @@
+#include <iostream>
+
 template<typename T>
 struct BaseBlock{
   BaseBlock* right;
@@ -23,8 +25,7 @@ struct AvlBlock{
   T data;
   int height;
   explicit AvlBlock(const T& data) : right(nullptr), left(nullptr), data(data), height(0) {}
-  virtual ~AvlBlock() = default;
-  virtual void Update();
+  void Update();
   int BF() const;
   bool operator <(const AvlBlock* comp) const;
 };
@@ -51,22 +52,49 @@ bool AvlBlock<T>::operator<(const AvlBlock* comp)const {
 
 //RankBlock
 template<typename T>
-struct RankBlock : public AvlBlock<T>{
+struct RankBlock{
+  RankBlock* right;
+  RankBlock* left;
+  T data;
+  int height;
   int rank;
   int subTreeSize;
-  explicit RankBlock(const T& data) : AvlBlock<T>(data), rank(1), subTreeSize(1) {}
 
-  void Update() override;
+
+  int BF() const;
+  bool operator <(const RankBlock* comp) const;
+  explicit RankBlock(const T& data) : right(nullptr), left(nullptr), 
+    data(data), height(0), rank(1), subTreeSize(1) {}
+  void Update();
+
+  friend std::ostream& operator<<(std::ostream& os, const RankBlock<T>& block){
+    os << "(" << block.data << ", " << block.rank << ", " << block.subTreeSize << ")";
+    return os;
+  }
 };
+
+template<typename T>
+bool RankBlock<T>::operator<(const RankBlock* comp) const{
+  return this->data < comp->data;
+}
+
+template<typename T>
+int RankBlock<T>::BF() const{
+  int leftHeight = this->left == nullptr ? -1 : this->left->height;
+  int rightHeight = this->right == nullptr ? -1 : this->right->height;
+  return leftHeight - rightHeight;
+}
 
 //RankBlock methods
 template<typename T>
 void RankBlock<T>::Update() {
-  AvlBlock<T>::Update();
-
+  int leftHeight = this->left == nullptr ? -1 : left->height;
+  int rightHeight = this->right == nullptr ? -1 : right->height;
+  this->height = 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
+  
   subTreeSize = 1 + 
-   this->left == nullptr ? 0 : static_cast<RankBlock<T>*>(this->left)->subTreeSize +
-   this->right == nullptr ? 0 : static_cast<RankBlock<T>*>(this->right)->subTreeSize;
+   (this->left == nullptr ? 0 : this->left->subTreeSize) +
+   (this->right == nullptr ? 0 : this->right->subTreeSize);
 
-  this->rank = this->left == nullptr ? 1 : static_cast<RankBlock<T>*>(this->left)->subTreeSize + 1;
+  this->rank = (this->left == nullptr ? 0 : this->left->subTreeSize) + 1;
 }

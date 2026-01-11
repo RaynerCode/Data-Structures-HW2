@@ -265,6 +265,8 @@ template<typename T, typename Block>
 Block*& AvlTree<T, Block>::GetMin(Block* toRem, Stack<Block*>& path){
     if(toRem->right->left == nullptr) return toRem->right;
     Block* curr = toRem ->right;
+    if(curr->left->left == nullptr)
+        path.Push(curr);
     while(curr->left->left !=nullptr) { 
         path.Push(curr);
         curr = curr->left;
