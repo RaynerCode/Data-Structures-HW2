@@ -1,28 +1,32 @@
 #include<iostream>
 
-template<typename T1, typename T2>
+struct Default{
+    template<typename P>
+    bool operator()(const P& p1, const P& p2) const {
+    return p1.first < p2.first;
+  }
+};
+
+template<typename T1, typename T2, typename Comp = Default>
 struct Pair {
     T1 first;
     T2 second;
+    Comp c;
 
-    Pair(const T1& first, const T2& second) : first(first), second(second) {}
+    Pair(const T1& first, const T2& second, Comp comp = Comp()) : first(first), second(second), c(comp) {}
     Pair(const Pair& otehr) = default;
     Pair& operator=(const Pair& other) = delete;
     bool operator<(const Pair& other) const {
-        if(this->first < other.first) return true;
-        else if(other.first < this->first) return false;
-        else return this->second < other.second;
+        return c(*this, other);
     }
 
     bool operator>(const Pair& other) const {
-        if(other.first < this->first) return true;
-        else if(this->first < other.first) return false;
-        else return other.second < this->second;
+        return c(other, *this);
     }
 
     bool operator==(const Pair& other) const {return !( (*this < other) || (other < *this) );}
     
-    friend std::ostream& operator<<(std::ostream& out, const Pair<T1, T2>& p) {
+    friend std::ostream& operator<<(std::ostream& out, const Pair& p) {
         out << "(" << p.first << ", " << p.second << ")";
         return out;
     }
