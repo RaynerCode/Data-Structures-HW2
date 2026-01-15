@@ -8,6 +8,7 @@ template<typename T>
 struct BaseBlock{
     BaseBlock* next;
     T data;
+
     explicit BaseBlock(const T& data) : next(nullptr), data(data) {}
     virtual ~BaseBlock() = default;
 };
@@ -25,9 +26,10 @@ template <typename T>
 class hashedArray {
 private:
     item<T>* m_array;
-    int current_count;
+    unsigned int current_count;
     int prime_index;
     unsigned int m_size_array;
+    void doubleHashSize();
 public:
     explicit hashedArray();
     void insert(int key, T value);
@@ -39,8 +41,6 @@ inline int hash(const int key, const int m) { //up to implementation, currently 
 }
 
 
-void doubleHashSize();
-void halveHashSize();
 
 template<typename T>
 hashedArray<T>::hashedArray() {
@@ -61,8 +61,12 @@ void hashedArray<T>::insert(const int key, T value) {
     }
     else {
         m_array[index].last->next = new BaseBlock<Pair<int,T>>(Pair<int,T>(key, value));
-        std::cout << "inserting last, last->next ptr: " << m_array[index].last->next << std::endl;
+        std::cout << "inserting last, bucket index: " << index << " m : " << m_size_array <<  std::endl;
         m_array[index].last = m_array[index].last->next;
+    }
+    current_count++;
+    if(current_count == m_size_array) {
+        doubleHashSize();
     }
 }
 
@@ -74,7 +78,6 @@ T hashedArray<T>::getValue(const int key) const {
         if(curr->data.first == key) {
             return curr->data.second;
         }
-        std::cout << "curr ptr: " << curr << std::endl;
         curr = curr->next;
     }
     return -1; //key not in array should really throw an exception
@@ -91,5 +94,33 @@ item<T>::~item() {
     }
 }
 
+template<typename T>
+void hashedArray<T>::doubleHashSize() {
+    //static_assert(current_count > m_size_array / 2, "can double only if count exceeds half");
+    item<T>*  old_array = m_array;
+    unsigned int new_array_size = primesPowerOfTwo[++prime_index];
+    m_array = new item<T>[new_array_size];
+    unsigned int old_array_size = m_size_array;
+    this->m_size_array = new_array_size; //no bad_alloc, can procede
+    this->current_count = 0;
+    BaseBlock<Pair<int,T>>* current;
+    int max_depth = 0;
+    int current_depth = 0;
+    for(unsigned int i = 0; i < old_array_size; i++) {
+        if((current = old_array[i].head) != nullptr) {
+            current_depth = 0;
+            while(current != nullptr) {
+                this->insert(current->data.first, current->data.second);
+                current = current->next;
+                current_depth++;
+                if(current_depth > max_depth) max_depth = current_depth;
+            }
+        }
+    }
+    std::cout << "max depth: " << max_depth << std::endl;
+    //all is inserted to new array
+    delete[] old_array;
+    std::cout << "doubled array, new size is: " << m_size_array << std::endl;
+}
 
 

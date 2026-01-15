@@ -1,6 +1,18 @@
 #include "hash.h"
 #include <iostream>
+#include <random>
+
 int main() {
+    std::random_device rd;
+
+    // 2. Initialize the generator (Mersenne Twister) with the seed
+    std::mt19937 gen(rd());
+
+    // 3. Define the range [1, 10000] (inclusive)
+    std::uniform_int_distribution<> distr(1, 10000);
+
+    // 4. Generate and print the number
+
     hashedArray<double> a;
     a.insert(1234135, 3.14);
     a.insert(3, 2.718);
@@ -13,6 +25,13 @@ int main() {
     std::cout << a.getValue(23) << std::endl;
     std::cout << a.getValue(33) << std::endl;
     std::cout << a.getValue(43) << std::endl;
+    for(int i = 0; i < 1000; i++) {
+        const int random_num = distr(gen);
+        a.insert(i , i%7);
+        std::cout << random_num << std::endl;
+    }
+    std::cout << a.getValue(555) << std::endl;
+
 
 
     return 0;
