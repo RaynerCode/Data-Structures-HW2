@@ -9,7 +9,7 @@ int main() {
     std::mt19937 gen(rd());
 
     // 3. Define the range [1, 10000] (inclusive)
-    std::uniform_int_distribution<> distr(1, 10000);
+    std::uniform_int_distribution<> distr(1, 100000);
 
     // 4. Generate and print the number
 
@@ -27,7 +27,7 @@ int main() {
     std::cout << a.getValue(43) << std::endl;
     for(int i = 0; i < 1000; i++) {
         const int random_num = distr(gen);
-        a.insert(i , i%7);
+        a.insert(random_num , i%7);
         std::cout << random_num << std::endl;
     }
     std::cout << a.getValue(555) << std::endl;
