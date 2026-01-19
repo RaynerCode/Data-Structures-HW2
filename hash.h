@@ -33,6 +33,7 @@ private:
 public:
     explicit hashedArray();
     void insert(int key, T value);
+    void setData(int key, T value);
     T getValue(int key) const;
 };
 
@@ -80,7 +81,7 @@ T hashedArray<T>::getValue(const int key) const {
         }
         curr = curr->next;
     }
-    return -1; //key not in array should really throw an exception
+    throw(std::invalid_argument("key not found")); //key not in array should really throw an exception
 }
 
 template<typename T>
@@ -121,6 +122,20 @@ void hashedArray<T>::doubleHashSize() {
     //all is inserted to new array
     delete[] old_array;
     std::cout << "doubled array, new size is: " << m_size_array << std::endl;
+}
+
+template<typename T>
+void hashedArray<T>::setData(int key, T value) {
+    unsigned int index = hash(key, this->m_size_array);
+    auto current = this->m_array[index].head;
+    while(current != nullptr) {
+        if(current->data.first == key) {
+            current->data.second = value;
+            return;
+        }
+        current = current->next;
+    }
+    throw(std::invalid_argument("key not found"));
 }
 
 
