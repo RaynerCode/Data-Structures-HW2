@@ -14,8 +14,8 @@ public:
     explicit Squad(int squadId);
     int GetSquadExp() const;
     int GetSquadAura() const;
-    NenAbility& GetSquadNen();
+    const NenAbility& GetSquadNen() const;
     void addHunter(const Hunter& hunter); //adds hunter's params to the squad's params
     void mergeSquad(const Squad& newSquad); //merges the new squad into this squad
-
+    void addSquadExp(int amt);
 };
