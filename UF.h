@@ -1,19 +1,8 @@
 #include "hash.h"
 #include "Stack.h"
-#include "wet2util.h"
+#include "hunter.h"
+#include "squad.h"
 #include <memory>
-
-class Hunter{
-  public:
-  Hunter(Hunter& hunter) = default;
-  void SetFightHad(int fights);
-  int GetFightsHad() const;
-  NenAbility& GetNenAbility() const;
-};
-class Squad{
-  public:
-  int get_hunter_count() const;
-};
 
 class UF{
   struct hunterNode{
@@ -33,7 +22,7 @@ class UF{
 
     UF();
 
-    //Creates a new set. Make sure the key, item and group don't already exist (Data set doesn't check for that).
+    //Creates a new set. Make sure item and group don't already exist (Data set doesn't check for those. It does check for key duplication errors).
     void MakeSet(int key, std::shared_ptr<Hunter> item, std::shared_ptr<Squad> Set);
 
     //Adds a new item to an existing set.
