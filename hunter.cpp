@@ -7,16 +7,20 @@ int Hunter::GetFightsHad() const {
     return this->fightsHad;
 }
 
-NenAbility& Hunter::GetNenAbility() {
+const NenAbility& Hunter::GetNenAbility() const{
     return this->nenType;
 }
 
-NenAbility& Hunter::GetPartialNenAbility() {
+const NenAbility& Hunter::GetPartialNenAbility() const{
     return this->pNen;
 }
 
 void Hunter::SetFightsHad(const int fights) {
     this->fightsHad = fights;
+}
+
+int Hunter::GetAura() const {
+    return this->aura;
 }
 
 

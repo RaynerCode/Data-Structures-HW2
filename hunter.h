@@ -12,9 +12,9 @@ public:
     Hunter(int hunterId, int squadId, const NenAbility& type, int aura, int fightsHad);
     void SetFightsHad(int fights);
     int GetFightsHad() const;
-
-    NenAbility& GetNenAbility();
-    NenAbility& GetPartialNenAbility();
+    int GetAura() const;
+    const NenAbility& GetNenAbility() const;
+    const NenAbility& GetPartialNenAbility() const;
 
 };
 
