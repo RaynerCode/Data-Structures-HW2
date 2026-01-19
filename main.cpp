@@ -25,6 +25,12 @@ int main() {
     std::cout << a.getValue(23) << std::endl;
     std::cout << a.getValue(33) << std::endl;
     std::cout << a.getValue(43) << std::endl;
+    a.setData(43, 7);
+    std::cout << "new data: " << a.getValue(43) << std::endl;
+    std::cout << a.getValue(43) << std::endl;
+    a.setData(43, 666);
+    std::cout << a.getValue(43) << std::endl;
+
     for(int i = 0; i < 1000; i++) {
         const int random_num = distr(gen);
         a.insert(random_num , i%7);
