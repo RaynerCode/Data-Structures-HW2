@@ -31,6 +31,9 @@ void Squad::addSquadExp(const int amt) {
     this->squadExp += amt;
 }
 
+int Squad::GetSquadSize() const {
+    return this->squadSize;
+}
 
 
 
