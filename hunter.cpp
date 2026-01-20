@@ -23,6 +23,16 @@ int Hunter::GetAura() const {
     return this->aura;
 }
 
+int Hunter::GetHunterId() const {
+    return this->hunterId;
+}
+
+int Hunter::GetSquadId() const {
+    return this->squadId;
+}
+
+
+
 
 
 

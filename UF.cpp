@@ -16,28 +16,28 @@ void UF::MakeSet(int key, std::shared_ptr<Hunter> item, std::shared_ptr<Squad> S
   Set_data.insert(key, Set);
 }
 
-void UF::AddToSet(int key, std::shared_ptr<Hunter> item, int group_mermber_key){
-  Find(group_mermber_key); //Finds the set to add to
+void UF::AddToSet(const int key, const std::shared_ptr<Hunter>& item,const int group_member_key){
+  Find(group_member_key); //Finds the set to add to
   MakeSet(key, item, nullptr); //create an imaginary set
-  Union(key, group_mermber_key); 
+  Union(key, group_member_key);
   /*unite the imaginary set with the real one.
   /Note that the imaginary set's squad is the same as the real one's
-  /so it has equal member count. this means the imagenary set will always be
+  /so it has equal member count. this means the imaginary set will always be
   /united into the real one, keeping the real one's root.
   */
 }
 
-void UF::Union(int key1, int key2){
-  int parent_key1 = FindRoot(key1);
-  int parent_key2 = FindRoot(key2);
+void UF::Union(const int key1,const int key2){
+  const int parent_key1 = FindRoot(key1);
+  const int parent_key2 = FindRoot(key2);
 
   if(Set_data.getValue(parent_key1) == nullptr || Set_data.getValue(parent_key2) == nullptr)
     throw std::runtime_error("one or more sets do not exist");
 
   if(parent_key1 == parent_key2) return; //already in the same set.
 
-  Squad& set1 = *(Set_data.getValue(parent_key1).get());
-  Squad& set2 = *(Set_data.getValue(parent_key2).get());
+  const Squad& set1 = *(Set_data.getValue(parent_key1));
+  const Squad& set2 = *(Set_data.getValue(parent_key2));
 
   //Get Nodes
   hunterNode node1 = item_data.getValue(parent_key1);
@@ -53,6 +53,7 @@ void UF::Union(int key1, int key2){
 
     //Update fights had
     node2.hunter->SetFightsHad(node2.hunter->GetFightsHad() - node1.hunter->GetFightsHad());
+    node2.hunter->SetFightsHad(node2.hunter->GetFightsHad() - node1.hunter->GetFightsHad());
 
     //Update sets
     Set_data.setData(parent_key2, nullptr);
@@ -67,13 +68,14 @@ void UF::Union(int key1, int key2){
 
     //Update fights had
     node1.hunter->SetFightsHad(node1.hunter->GetFightsHad() - node2.hunter->GetFightsHad());
+    node1.hunter->SetFightsHad(node1.hunter->GetFightsHad() - node2.hunter->GetFightsHad());
 
     //Update sets
     Set_data.setData(parent_key1, nullptr);
   }
 }
 
-std::shared_ptr<Squad> UF::Find(int key){
+std::shared_ptr<Squad> UF::Find(const int key){
   return Set_data.getValue(FindRoot(key));
 }
 
@@ -121,7 +123,7 @@ void UF::PathCompress(Stack<int>& path){
   }
 }
 
-int UF::FindRoot(int key){
+int UF::FindRoot(const int key){
   Stack<int> path;
   int parent_key = key;
   while(parent.getValue(parent_key) != -1){

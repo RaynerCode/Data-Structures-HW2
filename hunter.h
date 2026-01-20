@@ -13,6 +13,8 @@ public:
     void SetFightsHad(int fights);
     int GetFightsHad() const;
     int GetAura() const;
+    int GetHunterId() const;
+    int GetSquadId() const;
     const NenAbility& GetNenAbility() const;
     const NenAbility& GetPartialNenAbility() const;
 

@@ -1,3 +1,4 @@
+#pragma once
 #include "hash.h"
 #include "Stack.h"
 #include "hunter.h"
@@ -10,7 +11,7 @@ class UF{
     NenAbility sub_group_nen;
     NenAbility hunter_nen;
 
-    hunterNode(std::shared_ptr<Hunter> hunter)
+    explicit hunterNode(const std::shared_ptr<Hunter>& hunter)
      : hunter(hunter), sub_group_nen(hunter->GetNenAbility()), hunter_nen(hunter->GetNenAbility()) {}
   };
 
@@ -26,7 +27,7 @@ class UF{
     void MakeSet(int key, std::shared_ptr<Hunter> item, std::shared_ptr<Squad> Set);
 
     //Adds a new item to an existing set.
-    void AddToSet(int key, std::shared_ptr<Hunter> item, int group_member_key);
+    void AddToSet(int key, const std::shared_ptr<Hunter>& item, int group_member_key);
 
     //Unites key2's set into key1's set.
     void Union(int key1, int key2);
