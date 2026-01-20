@@ -100,12 +100,13 @@ NenAbility UF::GetPartialNen(int key){
 void UF::PathCompress(Stack<int>& path){
   if(path.IsEmpty()) return;
   
-  int parent_key = parent.getValue(path.Pop());
+  int parent_key = path.Pop();
   int fights_to_add = item_data.getValue(parent_key).hunter->GetFightsHad();
   NenAbility partial_nen(item_data.getValue(parent_key).hunter_nen);
   while(!path.IsEmpty()){
     //get hunter to update
     parent_key = path.Peek();
+    
     Hunter& hunter = *(item_data.getValue(parent_key).hunter);
 
     //update fights had
