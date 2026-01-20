@@ -35,6 +35,11 @@ int Squad::GetSquadSize() const {
     return this->squadSize;
 }
 
+int Squad::GetSquadId() const {
+    return this->squadId;
+}
+
+
 
 
 
