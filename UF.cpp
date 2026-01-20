@@ -18,8 +18,8 @@ void UF::MakeSet(int key, std::shared_ptr<Hunter> item, std::shared_ptr<Squad> S
 
 void UF::AddToSet(const int key, const std::shared_ptr<Hunter>& item,const int group_member_key){
   Find(group_member_key); //Finds the set to add to
-  MakeSet(key, item, nullptr); //create an imaginary set
-  Union(key, group_member_key);
+  MakeSet(key, item, std::make_shared<Squad>(-1)); //create an imaginary set
+  Union(group_member_key, key);
   /*unite the imaginary set with the real one.
   /Note that the imaginary set's squad is the same as the real one's
   /so it has equal member count. this means the imaginary set will always be
@@ -71,6 +71,7 @@ void UF::Union(const int key1,const int key2){
     node1.hunter->SetFightsHad(node1.hunter->GetFightsHad() - node2.hunter->GetFightsHad());
 
     //Update sets
+    Set_data.setData(parent_key2, Set_data.getValue(parent_key1));
     Set_data.setData(parent_key1, nullptr);
   }
 }
@@ -106,7 +107,7 @@ void UF::PathCompress(Stack<int>& path){
   NenAbility partial_nen(item_data.getValue(parent_key).hunter_nen);
   while(!path.IsEmpty()){
     //get hunter to update
-    parent_key = path.Pop();
+    parent_key = path.Peek();
     Hunter& hunter = *(item_data.getValue(parent_key).hunter);
 
     //update fights had
