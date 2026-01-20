@@ -31,10 +31,12 @@ private:
     unsigned int m_size_array;
     void doubleHashSize();
 public:
+    ~hashedArray();
     explicit hashedArray();
     void insert(int key, T value);
     void setData(int key, T value);
-
+    hashedArray(const hashedArray& other);
+    hashedArray& operator=(const hashedArray& other);
     T& getValue(int key) const;
 };
 
@@ -42,6 +44,36 @@ inline int hash(const int key, const int m) { //up to implementation, currently 
     return key % m;
 }
 
+template<typename T>
+hashedArray<T>::~hashedArray() {
+    delete[] m_array;
+}
+
+
+template<typename T>
+hashedArray<T>::hashedArray(const hashedArray &other) :
+current_count(other.current_count), prime_index(other.prime_index) , m_size_array(other.m_size_array)
+{
+    m_array = new item<T>[m_size_array];
+    for(unsigned int i = 0; i < m_size_array; i++) {
+        m_array[i] = other.m_array[i];
+    }
+}
+
+template<typename T>
+hashedArray<T> &hashedArray<T>::operator=(const hashedArray &other) {
+    if(this != &other) {
+        delete[] m_array;
+        current_count = other.current_count;
+        prime_index = other.prime_index;
+        m_size_array = other.m_size_array;
+        m_array = new item<T>[m_size_array];
+        for(unsigned int i = 0; i < m_size_array; i++) {
+            m_array[i] = other.m_array[i];
+        }
+    }
+    return *this;
+}
 
 
 template<typename T>
