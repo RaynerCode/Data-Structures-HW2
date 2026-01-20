@@ -2,7 +2,7 @@
 #include "Pair.h"
 #include <iostream>
 
-unsigned int primesPowerOfTwo[] = {2u, 3u, 5u, 11u, 17u, 37u, 67u, 131u, 257u, 521u, 1031u, 2053u, 4099u, 8209u, 16411u, 32771u, 65537u, 131101u, 262147u, 524309u, 1048583u, 2097169u, 4194319u, 8388617u, 16777259u, 33554467u, 67108879u, 134217757u, 268435459u, 536870923u, 1073741827u, 2147483659u};
+constexpr unsigned int primesPowerOfTwo[] = {2u, 3u, 5u, 11u, 17u, 37u, 67u, 131u, 257u, 521u, 1031u, 2053u, 4099u, 8209u, 16411u, 32771u, 65537u, 131101u, 262147u, 524309u, 1048583u, 2097169u, 4194319u, 8388617u, 16777259u, 33554467u, 67108879u, 134217757u, 268435459u, 536870923u, 1073741827u, 2147483659u};
 
 template<typename T>
 struct BaseBlock{
@@ -33,7 +33,8 @@ private:
 public:
     explicit hashedArray();
     void insert(int key, T value);
-    T getValue(int key) const;
+    void setData(int key, T value);
+    T& getValue(int key) const;
 };
 
 inline int hash(const int key, const int m) { //up to implementation, currently it is k%m.
@@ -71,7 +72,7 @@ void hashedArray<T>::insert(const int key, T value) {
 }
 
 template<typename T>
-T hashedArray<T>::getValue(const int key) const {
+T& hashedArray<T>::getValue(const int key) const {
     int index = hash(key, this->m_size_array);
     BaseBlock<Pair<int,T>>* curr = m_array[index].head;
     while(curr != nullptr) {
@@ -80,7 +81,7 @@ T hashedArray<T>::getValue(const int key) const {
         }
         curr = curr->next;
     }
-    return -1; //key not in array should really throw an exception
+    throw(std::invalid_argument("key not found")); //key not in array should really throw an exception
 }
 
 template<typename T>
@@ -123,4 +124,16 @@ void hashedArray<T>::doubleHashSize() {
     std::cout << "doubled array, new size is: " << m_size_array << std::endl;
 }
 
-
+template<typename T>
+void hashedArray<T>::setData(int key, T value) {
+    unsigned int index = hash(key, this->m_size_array);
+    auto current = this->m_array[index].head;
+    while(current != nullptr) {
+        if(current->data.first == key) {
+            current->data.second = value;
+            return;
+        }
+        current = current->next;
+    }
+    throw(std::invalid_argument("key not found"));
+}
