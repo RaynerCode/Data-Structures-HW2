@@ -10,7 +10,7 @@ void UF::MakeSet(int key, std::shared_ptr<Hunter> item, std::shared_ptr<Squad> S
 
     throw (std::invalid_argument("id already exists"));
   }
-  catch(...){}
+  catch(std::invalid_argument e){}
   parent.insert(key, -1); //-1 indicates that it is the root of the set.
   item_data.insert (key, hunterNode(item));
   Set_data.insert(key, Set);
@@ -78,12 +78,16 @@ std::shared_ptr<Squad> UF::Find(int key){
 }
 
 int UF::GetHunterFightsHad(int key){
+  if(parent.getValue(key) == -1) 
+    return item_data.getValue(key).hunter->GetFightsHad();
   int root = FindRoot(key); //also compresses path
   return item_data.getValue(key).hunter->GetFightsHad() +
     item_data.getValue(root).hunter->GetFightsHad();
 }
 
 NenAbility UF::GetPartialNen(int key){
+  if(parent.getValue(key) == -1)
+    return item_data.getValue(key).hunter_nen;
   int root = FindRoot(key); //also compresses path
   NenAbility nen(item_data.getValue(key).hunter_nen);
   nen += item_data.getValue(root).hunter_nen; 

@@ -42,9 +42,10 @@ class UF{
 
   private: //helper functions
 
-  /*Compresses the paths of all items in the stack. 
-  /It is asumed that the stack contanis a valid path  
-  /from one of the roots direct children (not containing root) to a leaf.
+  /*
+  Compresses the paths of all items in the stack. 
+  It is asumed that the stack contanis a valid path  
+  from one of the roots direct children (not containing root) to a leaf.
   */
   void PathCompress(Stack<int>& path);
 
