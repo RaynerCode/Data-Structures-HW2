@@ -36,8 +36,8 @@ void UF::Union(const int key1,const int key2){
 
   if(parent_key1 == parent_key2) return; //already in the same set.
 
-  const Squad& set1 = *(Set_data.getValue(parent_key1));
-  const Squad& set2 = *(Set_data.getValue(parent_key2));
+  Squad& set1 = *(Set_data.getValue(parent_key1));
+  Squad& set2 = *(Set_data.getValue(parent_key2));
 
   //Get Nodes
   hunterNode& node1 = item_data.getValue(parent_key1);
@@ -55,6 +55,7 @@ void UF::Union(const int key1,const int key2){
     node2.hunter->SetFightsHad(node2.hunter->GetFightsHad() - node1.hunter->GetFightsHad());
 
     //Update sets
+    set1.mergeSquad(set2);
     Set_data.setData(parent_key2, nullptr);
   }
   else{
@@ -69,6 +70,7 @@ void UF::Union(const int key1,const int key2){
     node1.hunter->SetFightsHad(node1.hunter->GetFightsHad() - node2.hunter->GetFightsHad());
 
     //Update sets
+    set1.mergeSquad(set2);
     Set_data.setData(parent_key2, Set_data.getValue(parent_key1));
     Set_data.setData(parent_key1, nullptr);
   }
