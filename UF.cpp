@@ -11,6 +11,7 @@ void UF::MakeSet(int key, std::shared_ptr<Hunter> item, std::shared_ptr<Squad> S
     throw (std::invalid_argument("id already exists"));
   }
   catch(std::invalid_argument& e){}
+    Set->addHunter(*item);
   parent.insert(key, -1); //-1 indicates that it is the root of the set.
   item_data.insert (key, hunterNode(item));
   Set_data.insert(key, Set);
