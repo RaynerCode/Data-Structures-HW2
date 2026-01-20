@@ -10,7 +10,7 @@ void UF::MakeSet(int key, std::shared_ptr<Hunter> item, std::shared_ptr<Squad> S
 
     throw (std::invalid_argument("id already exists"));
   }
-  catch(std::invalid_argument e){}
+  catch(std::invalid_argument& e){}
   parent.insert(key, -1); //-1 indicates that it is the root of the set.
   item_data.insert (key, hunterNode(item));
   Set_data.insert(key, Set);
@@ -40,8 +40,8 @@ void UF::Union(const int key1,const int key2){
   const Squad& set2 = *(Set_data.getValue(parent_key2));
 
   //Get Nodes
-  hunterNode node1 = item_data.getValue(parent_key1);
-  hunterNode node2 = item_data.getValue(parent_key2);
+  hunterNode& node1 = item_data.getValue(parent_key1);
+  hunterNode& node2 = item_data.getValue(parent_key2);
 
   if(set1.GetSquadSize() >= set2.GetSquadSize()){
     //Update root
