@@ -43,7 +43,7 @@ void UF::Union(const int key1,const int key2){
   hunterNode node1 = item_data.getValue(parent_key1);
   hunterNode node2 = item_data.getValue(parent_key2);
 
-  if(set1.getHunterCount() >= set2.getHunterCount()){
+  if(set1.GetSquadSize() >= set2.GetSquadSize()){
     //Update root
     parent.setData(parent_key2, parent_key1);
 
