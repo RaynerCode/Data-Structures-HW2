@@ -34,7 +34,8 @@ public:
     explicit hashedArray();
     void insert(int key, T value);
     void setData(int key, T value);
-    T getValue(int key) const;
+
+    T& getValue(int key) const;
 };
 
 inline int hash(const int key, const int m) { //up to implementation, currently it is k%m.
@@ -72,7 +73,7 @@ void hashedArray<T>::insert(const int key, T value) {
 }
 
 template<typename T>
-T hashedArray<T>::getValue(const int key) const {
+T& hashedArray<T>::getValue(const int key) const {
     int index = hash(key, this->m_size_array);
     BaseBlock<Pair<int,T>>* curr = m_array[index].head;
     while(curr != nullptr) {
@@ -137,5 +138,3 @@ void hashedArray<T>::setData(int key, T value) {
     }
     throw(std::invalid_argument("key not found"));
 }
-
-
