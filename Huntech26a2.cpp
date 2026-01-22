@@ -9,12 +9,18 @@ Huntech::~Huntech() = default;
 
 StatusType Huntech::add_squad(int squadId) {
     //do squadTree.Add(squadId)
-    if(squadId <= 0) {
-        return StatusType::INVALID_INPUT;
-    }
+    // if(squadId <= 0) {
+    //     return StatusType::INVALID_INPUT;
+    // }
     try {
-        this->squadIdTree.Add(Squad(squadId));
+        std::shared_ptr<Squad> newSquad = std::make_shared<Squad>(squadId);
+        this->squadIdTree.Add(newSquad);
+        this->squadAuraTree.Add(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(0,squadId,newSquad,c));
     }
+    catch (...) {
+        throw std::bad_alloc();
+    }
+
 
     return StatusType::FAILURE;
 }

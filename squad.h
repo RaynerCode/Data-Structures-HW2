@@ -1,4 +1,7 @@
 #pragma once
+#include <Block.h>
+#include <memory>
+
 #include "wet2util.h"
 #include "hunter.h"
 
@@ -13,7 +16,7 @@ struct SquadComp{
 };
 class Squad {
     int squadId;
-    int initialHunterId = -1;
+    std::shared_ptr<Hunter> initialHunter = nullptr;
     int squadSize = 0;
     int squadExp = 0;
     int squadFightsHad = 0;
@@ -27,18 +30,17 @@ public:
     int GetSquadAura() const;
     int GetSquadSize() const;
     int GetSquadId() const;
-    int GetInitialHunterId() const;
+    std::shared_ptr<Hunter> GetInitialHunter();
     const NenAbility& GetSquadNen() const;
     void addHunter(const Hunter& hunter); //adds hunter's params to the squad's params
     void mergeSquad(const Squad& newSquad); //merges the new squad into this squad
     void addSquadExp(int amt);
-    void setInitialHunterId(int id);
+    void setInitialHunter(const std::shared_ptr<Hunter>& initialHunter);
     bool operator<(const Squad& other) const;
-    bool operator>(const Squad& other) const;
-    bool operator==(const Squad& other) const;
-    friend std::ostream& operator<<(std::ostream& out, const Squad& s) {
-        out << "squad id: " << s.GetSquadId() << "squad Aura: " << s.GetSquadAura() << ".";
-        return out;
-    }
+     bool operator>(const Squad& other) const;
+     bool operator==(const Squad& other) const;
+     friend std::ostream& operator<<(std::ostream& out, const Squad& s) {
+         out << "squad id: " << s.GetSquadId() << "squad Aura: " << s.GetSquadAura() << ".";
+         return out;
+     }
 };
-

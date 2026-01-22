@@ -59,8 +59,7 @@ void RankTree<T, Block>::PrintInOrder(const Block* root) const {
     if(root == nullptr)
       return;
     PrintInOrder(root->left);
-    auto a = *root;
-    std::cout << a << " ";
+    std::cout << *root << " ";
     PrintInOrder(root->right);
 }
 

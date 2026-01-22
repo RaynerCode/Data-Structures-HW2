@@ -55,14 +55,16 @@ int Squad::GetSquadId() const {
     return this->squadId;
 }
 
-int Squad::GetInitialHunterId() const {
-    return this->initialHunterId;
+std::shared_ptr<Hunter> Squad::GetInitialHunter() {
+    return this->initialHunter;
 }
 
-void Squad::setInitialHunterId(const int id) {
-    if(this->initialHunterId >= 0) return;
-    this->initialHunterId = id;
+void Squad::setInitialHunter(const std::shared_ptr<Hunter>& initialHunter) {
+    if(this->initialHunter == nullptr) return;
+    this->initialHunter = initialHunter;
 }
+
+
 
 
 
