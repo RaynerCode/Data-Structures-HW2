@@ -1,5 +1,5 @@
 #pragma once
-#include "wet2util.h" //REMEMBER TO REMOVE BEFORE SUBMISSION
+#include "wet2util.h"
 class Hunter {
 private:
     int hunterId;

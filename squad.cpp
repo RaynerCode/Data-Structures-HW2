@@ -1,6 +1,22 @@
 #include "squad.h"
 
+
+
 Squad::Squad(const int squadId) : squadId(squadId) {}
+
+bool Squad::operator<(const Squad& other) const {
+    return c(*this, other);
+}
+
+bool Squad::operator>(const Squad& other) const {
+    return c(other, *this);
+}
+
+bool Squad::operator==(const Squad& other) const {
+    return !( (*this < other) || (other < *this) );
+}
+
+
 
 int Squad::GetSquadAura() const {
     return this->totalAura;
@@ -38,6 +54,16 @@ int Squad::GetSquadSize() const {
 int Squad::GetSquadId() const {
     return this->squadId;
 }
+
+int Squad::GetInitialHunterId() const {
+    return this->initialHunterId;
+}
+
+void Squad::setInitialHunterId(const int id) {
+    if(this->initialHunterId >= 0) return;
+    this->initialHunterId = id;
+}
+
 
 
 

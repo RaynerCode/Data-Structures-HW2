@@ -1,17 +1,18 @@
 #pragma once
 #include "Pair.h"
+#include "Block.h"
 #include <iostream>
 
 constexpr unsigned int primesPowerOfTwo[] = {2u, 3u, 5u, 11u, 17u, 37u, 67u, 131u, 257u, 521u, 1031u, 2053u, 4099u, 8209u, 16411u, 32771u, 65537u, 131101u, 262147u, 524309u, 1048583u, 2097169u, 4194319u, 8388617u, 16777259u, 33554467u, 67108879u, 134217757u, 268435459u, 536870923u, 1073741827u, 2147483659u};
 
-template<typename T>
-struct BaseBlock{
-    BaseBlock* next;
-    T data;
-
-    explicit BaseBlock(const T& data) : next(nullptr), data(data) {}
-    virtual ~BaseBlock() = default;
-};
+//template<typename T>
+// struct BaseBlock{
+//     BaseBlock* next;
+//     T data;
+//
+//     explicit BaseBlock(const T& data) : next(nullptr), data(data) {}
+//     virtual ~BaseBlock() = default;
+// };
 
 template <typename T> //each cell will have one 'item' holding a head block with the first inserted T, and a last Block for easy inserting
 struct item {
@@ -94,9 +95,9 @@ void hashedArray<T>::insert(const int key, T value) {
         std::cout << "inserting head" << std::endl;
     }
     else {
-        m_array[index].last->next = new BaseBlock<Pair<int,T>>(Pair<int,T>(key, value));
+        m_array[index].last->right = new BaseBlock<Pair<int,T>>(Pair<int,T>(key, value));
         std::cout << "inserting last, bucket index: " << index << " m : " << m_size_array <<  std::endl;
-        m_array[index].last = m_array[index].last->next;
+        m_array[index].last = m_array[index].last->right;
     }
     current_count++;
     if(current_count == m_size_array) {
@@ -112,7 +113,7 @@ T& hashedArray<T>::getValue(const int key) const {
         if(curr->data.first == key) {
             return curr->data.second;
         }
-        curr = curr->next;
+        curr = curr->right;
     }
     throw(std::invalid_argument("key not found")); //key not in array should really throw an exception
 }
@@ -122,7 +123,7 @@ item<T>::~item() {
     BaseBlock<Pair<int,T>>* curr = this->head;
     BaseBlock<Pair<int,T>>* next;
     while(curr != nullptr) {
-        next = curr->next;
+        next = curr->right;
         delete curr;
         curr = next;
     }
@@ -145,7 +146,7 @@ void hashedArray<T>::doubleHashSize() {
             current_depth = 0;
             while(current != nullptr) {
                 this->insert(current->data.first, current->data.second);
-                current = current->next;
+                current = current->right;
                 current_depth++;
                 if(current_depth > max_depth) max_depth = current_depth;
             }
@@ -166,7 +167,7 @@ void hashedArray<T>::setData(int key, T value) {
             current->data.second = value;
             return;
         }
-        current = current->next;
+        current = current->right;
     }
     throw(std::invalid_argument("key not found"));
 }

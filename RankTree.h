@@ -1,3 +1,4 @@
+#pragma once
 #include "AvlTree.h"
 
 template<typename T, typename Block = RankBlock<T>>
@@ -7,12 +8,14 @@ class RankTree : public AvlTree<T, Block>{
     const T& Get_ithRank(int i) const;
 
     //debug only
+    void PrintInOrder() const override;
     using AvlTree<T, Block>::PrintInOrder;
     using AvlTree<T, Block>::PrintPreOrder;
   private:
     const T& Get_ithRank(int i, Block* curr) const;
 
-  //debug only
+
+    //debug only
     void PrintInOrder(const Block* root) const override;
     void PrintPreOrder(const Block* root) const override;
 };
@@ -47,11 +50,17 @@ const T& RankTree<T, Block>::Get_ithRank(int i, Block* curr) const{
 }
 
 template<typename T, typename Block>
+void RankTree<T, Block>::PrintInOrder() const {
+  PrintInOrder(this->root);
+}
+
+template<typename T, typename Block>
 void RankTree<T, Block>::PrintInOrder(const Block* root) const {
     if(root == nullptr)
       return;
     PrintInOrder(root->left);
-    std::cout << *root << " ";
+    auto a = *root;
+    std::cout << a << " ";
     PrintInOrder(root->right);
 }
 

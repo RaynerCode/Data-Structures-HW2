@@ -33,7 +33,7 @@ class Tree{
     virtual void PrintInOrder(const Block* root) const;
     virtual void PrintPreOrder(const Block* root) const;
   public:
-    void PrintInOrder() const;
+    virtual void PrintInOrder() const;
     void PrintPreOrder() const;
   };
 

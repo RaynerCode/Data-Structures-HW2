@@ -6,7 +6,7 @@ template<typename T, typename Block = AvlBlock<T>>
 class AvlTree : public Tree<T, Block>{
     public:
     AvlTree() : Tree<T, Block>(){}
-    virtual void Add(const T& data) override;
+    void Add(const T& data) override;
     void Remove(const T& id) override;
 
     private:
