@@ -3,6 +3,8 @@
 #include "Block.h"
 #include<iostream>
 
+
+
 template<typename T, typename Block = BaseBlock<T>>
 class Tree{
   protected:
