@@ -24,7 +24,7 @@ class UF{
     UF();
 
     //Creates a new set. Make sure item and group don't already exist (Data set doesn't check for those. It does check for key duplication errors).
-    void MakeSet(int key, std::shared_ptr<Hunter> item, std::shared_ptr<Squad> Set);
+    void MakeSet(int key, const std::shared_ptr<Hunter> &item, const std::shared_ptr<Squad> &Set);
 
     //Adds a new item to an existing set.
     void AddToSet(int key, const std::shared_ptr<Hunter>& item, int group_member_key);

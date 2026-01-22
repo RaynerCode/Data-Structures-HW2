@@ -15,8 +15,8 @@ const NenAbility& Hunter::GetPartialNenAbility() const{
     return this->pNen;
 }
 
-void Hunter::SetFightsHad(const int fights) {
-    this->fightsHad = fights;
+void Hunter::AddFightsHad(const int amt) {
+    this->fightsHad += amt;
 }
 
 int Hunter::GetAura() const {

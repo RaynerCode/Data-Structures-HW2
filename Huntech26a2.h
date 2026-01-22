@@ -61,7 +61,7 @@ public:
 
     output_t<int> get_squad_experience(int squadId);
 
-    output_t<int> get_ith_collective_aura_squad(int i);
+    output_t<int> get_ith_collective_aura_squad(int i) const;
 
     output_t<NenAbility> get_partial_nen_ability(int hunterId);
 

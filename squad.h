@@ -23,6 +23,7 @@ class Squad {
     int totalAura = 0;
     NenAbility totalNen;
     SquadComp c;
+    bool dead = false;
 
 public:
     explicit Squad(int squadId);
@@ -30,12 +31,14 @@ public:
     int GetSquadAura() const;
     int GetSquadSize() const;
     int GetSquadId() const;
+    bool isDead() const;
     std::shared_ptr<Hunter> GetInitialHunter();
     const NenAbility& GetSquadNen() const;
-    void addHunter(const Hunter& hunter); //adds hunter's params to the squad's params
-    void mergeSquad(const Squad& newSquad); //merges the new squad into this squad
+    void addHunter(const std::shared_ptr<Hunter> &hunter); //adds hunter's params to the squad's params
+    void mergeSquad(const std::shared_ptr<Squad>& newSquad); //merges the new squad into this squad
     void addSquadExp(int amt);
-    void setInitialHunter(const std::shared_ptr<Hunter>& initialHunter);
+    void kill();
+    bool setInitialHunter(const std::shared_ptr<Hunter>& initialHunter);
     bool operator<(const Squad& other) const;
      bool operator>(const Squad& other) const;
      bool operator==(const Squad& other) const;

@@ -4,17 +4,18 @@
 
 UF::UF(): parent(), item_data(), Set_data() {}
 
-void UF::MakeSet(int key, std::shared_ptr<Hunter> item, std::shared_ptr<Squad> Set){
+void UF::MakeSet(const int key, const std::shared_ptr<Hunter>& item, const std::shared_ptr<Squad>& Set){
   try{
-    parent.getValue(key);
-
-    throw (std::invalid_argument("id already exists"));
+    parent.getValue(key); //it should throw an error because key is not in system, if succeeds then WE throw an error
   }
-  catch(std::invalid_argument& e){}
-    Set->addHunter(*item);
-  parent.insert(key, -1); //-1 indicates that it is the root of the set.
-  item_data.insert (key, hunterNode(item));
-  Set_data.insert(key, Set);
+  catch(std::invalid_argument& e) {
+    Set->addHunter(item);
+    parent.insert(key, -1); //-1 indicates that it is the root of the set.
+    item_data.insert (key, hunterNode(item));
+    Set_data.insert(key, Set);
+    return;
+  }
+  throw (std::invalid_argument("id already exists"));
 }
 
 void UF::AddToSet(const int key, const std::shared_ptr<Hunter>& item,const int group_member_key){
@@ -37,14 +38,14 @@ void UF::Union(const int key1,const int key2){
 
   if(parent_key1 == parent_key2) return; //already in the same set.
 
-  Squad& set1 = *(Set_data.getValue(parent_key1));
-  Squad& set2 = *(Set_data.getValue(parent_key2));
+  std::shared_ptr<Squad> set1 = Set_data.getValue(parent_key1);
+  std::shared_ptr<Squad> set2 = Set_data.getValue(parent_key2);
 
   //Get Nodes
   hunterNode& node1 = item_data.getValue(parent_key1);
   hunterNode& node2 = item_data.getValue(parent_key2);
 
-  if(set1.GetSquadSize() >= set2.GetSquadSize()){
+  if(set1->GetSquadSize() >= set2->GetSquadSize()){
     //Update root
     parent.setData(parent_key2, parent_key1);
 
@@ -53,10 +54,10 @@ void UF::Union(const int key1,const int key2){
     node1.sub_group_nen += node2.sub_group_nen;
 
     //Update fights had
-    node2.hunter->SetFightsHad(node2.hunter->GetFightsHad() - node1.hunter->GetFightsHad());
+    node2.hunter->AddFightsHad(-1 * node1.hunter->GetFightsHad());
 
     //Update sets
-    set1.mergeSquad(set2);
+    set1->mergeSquad(set2);
     Set_data.setData(parent_key2, nullptr);
   }
   else{
@@ -68,10 +69,10 @@ void UF::Union(const int key1,const int key2){
     node1.hunter_nen -= node2.hunter_nen;
 
     //Update fights had
-    node1.hunter->SetFightsHad(node1.hunter->GetFightsHad() - node2.hunter->GetFightsHad());
+    node1.hunter->AddFightsHad(-1 * node2.hunter->GetFightsHad());
 
     //Update sets
-    set1.mergeSquad(set2);
+    set1->mergeSquad(set2);
     Set_data.setData(parent_key2, Set_data.getValue(parent_key1));
     Set_data.setData(parent_key1, nullptr);
   }
@@ -113,8 +114,8 @@ void UF::PathCompress(Stack<int>& path){
     Hunter& hunter = *(item_data.getValue(parent_key).hunter);
 
     //update fights had
-    int temp = hunter.GetFightsHad();
-    hunter.SetFightsHad(hunter.GetFightsHad() + fights_to_add);
+    const int temp = hunter.GetFightsHad();
+    hunter.AddFightsHad(fights_to_add);
     fights_to_add += temp;
 
     //update partial nen
