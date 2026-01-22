@@ -9,7 +9,6 @@ void UF::MakeSet(const int key, const std::shared_ptr<Hunter>& item, const std::
     parent.getValue(key); //it should throw an error because key is not in system, if succeeds then WE throw an error
   }
   catch(std::invalid_argument& e) {
-    Set->addHunter(item);
     parent.insert(key, -1); //-1 indicates that it is the root of the set.
     item_data.insert (key, hunterNode(item));
     Set_data.insert(key, Set);
@@ -103,24 +102,23 @@ NenAbility UF::GetPartialNen(int key){
 
 void UF::PathCompress(Stack<int>& path){
   if(path.IsEmpty()) return;
-  
-  int parent_key = path.Pop();
-  int fights_to_add = item_data.getValue(parent_key).hunter->GetFightsHad();
-  NenAbility partial_nen(item_data.getValue(parent_key).hunter_nen);
+
+  int curr = path.Pop(), parent_key = parent.getValue(curr);
+  int fights_to_add = item_data.getValue(curr).hunter->GetFightsHad();
+  NenAbility partial_nen(item_data.getValue(curr).hunter_nen);
   while(!path.IsEmpty()){
     //get hunter to update
-    parent_key = path.Peek();
-    
-    Hunter& hunter = *(item_data.getValue(parent_key).hunter);
+    curr = path.Peek();
+    Hunter& hunter = *(item_data.getValue(curr).hunter);
 
     //update fights had
-    const int temp = hunter.GetFightsHad();
+    int temp = hunter.GetFightsHad();
     hunter.AddFightsHad(fights_to_add);
     fights_to_add += temp;
 
     //update partial nen
-    item_data.getValue(parent_key).hunter_nen += partial_nen;
-    partial_nen = item_data.getValue(parent_key).hunter_nen;
+    item_data.getValue(curr).hunter_nen += partial_nen;
+    partial_nen = item_data.getValue(curr).hunter_nen;
 
     //update parent
     parent.setData(path.Pop(), parent_key);

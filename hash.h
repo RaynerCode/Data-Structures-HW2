@@ -1,7 +1,6 @@
 #pragma once
 #include "Pair.h"
 #include "Block.h"
-#include <iostream>
 
 constexpr unsigned int primesPowerOfTwo[] = {2u, 3u, 5u, 11u, 17u, 37u, 67u, 131u, 257u, 521u, 1031u, 2053u, 4099u, 8209u, 16411u, 32771u, 65537u, 131101u, 262147u, 524309u, 1048583u, 2097169u, 4194319u, 8388617u, 16777259u, 33554467u, 67108879u, 134217757u, 268435459u, 536870923u, 1073741827u, 2147483659u};
 
@@ -83,7 +82,6 @@ hashedArray<T>::hashedArray() {
     m_size_array = primesPowerOfTwo[prime_index];
     current_count = 0;
     m_array = new item<T>[m_size_array];
-    std::cout << "m_array size: " << m_size_array << std::endl;
 }
 
 template<typename T>
@@ -92,11 +90,9 @@ void hashedArray<T>::insert(const int key, T value) {
     if(m_array[index].head == nullptr) {
         m_array[index].head = new BaseBlock<Pair<int,T>>(Pair<int,T>(key, value));
         m_array[index].last = m_array[index].head;
-        std::cout << "inserting head" << std::endl;
     }
     else {
         m_array[index].last->right = new BaseBlock<Pair<int,T>>(Pair<int,T>(key, value));
-        std::cout << "inserting last, bucket index: " << index << " m : " << m_size_array <<  std::endl;
         m_array[index].last = m_array[index].last->right;
     }
     current_count++;
@@ -152,10 +148,8 @@ void hashedArray<T>::doubleHashSize() {
             }
         }
     }
-    std::cout << "max depth: " << max_depth << std::endl;
     //all is inserted to new array
     delete[] old_array;
-    std::cout << "doubled array, new size is: " << m_size_array << std::endl;
 }
 
 template<typename T>

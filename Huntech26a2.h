@@ -36,7 +36,7 @@ private:
     SquadComp c;
     UF m_uf;
     RankTree<Triplet<int , int, std::shared_ptr<Squad>, SquadComp>> squadAuraTree;
-    AvlTree<std::shared_ptr<Squad>> squadIdTree;
+    AvlTree<Pair<int,std::shared_ptr<Squad>>> squadIdTree;
     //squadAuraTree sorts squads by their aura first and then by their id. each node should hold the number of squads with less
 
 public:
