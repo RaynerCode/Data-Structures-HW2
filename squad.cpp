@@ -1,4 +1,4 @@
-#include "squad.h"
+#include "hunter.h"
 
 
 
@@ -31,6 +31,7 @@ const NenAbility &Squad::GetSquadNen() const{
 }
 
 void Squad::addHunter(const std::shared_ptr<Hunter>&hunter) {
+    if(initialHunter == nullptr) initialHunter = hunter;
     this->squadSize++;
     this->totalAura += hunter->GetAura();
     this->totalNen += hunter->GetNenAbility();

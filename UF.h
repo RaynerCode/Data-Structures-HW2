@@ -2,22 +2,11 @@
 #include "hash.h"
 #include "Stack.h"
 #include "hunter.h"
-#include "squad.h"
 #include <memory>
 
 class UF{
-  struct hunterNode{
-    std::shared_ptr<Hunter> hunter;
-    NenAbility sub_group_nen;
-    NenAbility hunter_nen;
 
-    explicit hunterNode(const std::shared_ptr<Hunter>& hunter)
-     : hunter(hunter), sub_group_nen(hunter->GetNenAbility()), hunter_nen(hunter->GetNenAbility()) {}
-  };
-
-  hashedArray<int> parent;
-  hashedArray<hunterNode> item_data;
-  hashedArray<std::shared_ptr<Squad>> Set_data;
+  hashedArray<std::shared_ptr<Hunter>> item_data;
 
   public:
 
@@ -31,6 +20,8 @@ class UF{
 
     //Unites key2's set into key1's set.
     void Union(int key1, int key2);
+
+    void ForceUnion(std::shared_ptr<Squad> set1, std::shared_ptr<Squad> set2);
 
     //Finds the key's set.
     std::shared_ptr<Squad> Find(int key);
