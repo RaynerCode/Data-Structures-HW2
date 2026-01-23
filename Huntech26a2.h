@@ -48,7 +48,9 @@ public:
     StatusType add_squad(int squadId);
     
     StatusType remove_squad(int squadId);
-    
+
+    StatusType remove_squad_internal(int squadId);
+
     StatusType add_hunter(int hunterId,
                           int squadId,
                           const NenAbility &nenType,

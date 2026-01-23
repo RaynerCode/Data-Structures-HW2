@@ -39,6 +39,31 @@ StatusType Huntech::remove_squad(int squadId) {
         //const int idToDelete = squadToDelete.second->GetSquadId();
         squadIdTree.Remove(squadToDelete);
         squadAuraTree.Remove(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(squadToDelete.second->GetSquadAura() ,squadToDelete.second->GetSquadId(),squadToDelete.second,c));
+        squadToDelete.second->kill();
+    }
+    catch (const std::bad_alloc& e) {
+        return StatusType::ALLOCATION_ERROR;
+    }
+    catch (const std::invalid_argument& e) {
+        return StatusType::FAILURE;
+    }
+    catch (...) {
+        return StatusType::FAILURE;
+    }
+    return StatusType::SUCCESS;
+}
+
+StatusType Huntech::remove_squad_internal(int squadId) {
+    //remove squad from Tree. the UF isn't changed because this squad becomes numb, it can't be
+    //united with any other squad because union happens through SquadIds.
+    if(squadId <= 0) {
+        return StatusType::INVALID_INPUT;
+    }
+    try {
+        Pair<int,std::shared_ptr<Squad>> squadToDelete = this->squadIdTree.Find(Pair<int,std::shared_ptr<Squad>>(squadId,std::make_shared<Squad>(squadId)));
+        //const int idToDelete = squadToDelete.second->GetSquadId();
+        squadIdTree.Remove(squadToDelete);
+        squadAuraTree.Remove(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(squadToDelete.second->GetSquadAura() ,squadToDelete.second->GetSquadId(),squadToDelete.second,c));
     }
     catch (const std::bad_alloc& e) {
         return StatusType::ALLOCATION_ERROR;
@@ -64,7 +89,7 @@ StatusType Huntech::add_hunter(int hunterId,
     try {
         const std::shared_ptr<Squad> squad = this->squadIdTree.Find(Pair<int,std::shared_ptr<Squad>>(squadId , std::make_shared<Squad>(squadId))).second;
         const std::shared_ptr<Hunter> newHunter(std::make_shared<Hunter>(hunterId, squadId, nenType, aura, fightsHad));
-        this->remove_squad(squadId);
+        this->remove_squad_internal(squadId);
         squad->addHunter(newHunter);
         this->squadIdTree.Add(Pair<int,std::shared_ptr<Squad>>(squadId, squad));
         this->squadAuraTree.Add(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(squad->GetSquadAura(),squadId,squad,c));
@@ -236,8 +261,8 @@ StatusType Huntech::force_join(int forcingSquadId, int forcedSquadId) {
         }
         std::shared_ptr<Hunter> forcingHunter = forcingSquad->GetInitialHunter();
         std::shared_ptr<Hunter> forcedHunter = forcedSquad->GetInitialHunter();
-        this->remove_squad(forcingSquad->GetSquadId());
-        this->remove_squad(forcedSquad->GetSquadId());
+        this->remove_squad_internal(forcingSquad->GetSquadId());
+        this->remove_squad_internal(forcedSquad->GetSquadId());
         forcingSquad->mergeSquad(forcedSquad);
         this->squadIdTree.Add(Pair<int,std::shared_ptr<Squad>>(forcingSquadId, forcingSquad));
         this->squadAuraTree.Add(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(forcingSquad->GetSquadAura(),forcingSquadId,forcingSquad,c));

@@ -56,7 +56,6 @@ void UF::Union(const int key1,const int key2){
     node2.hunter->AddFightsHad(-1 * node1.hunter->GetFightsHad());
 
     //Update sets
-    set1->mergeSquad(set2);
     Set_data.setData(parent_key2, nullptr);
   }
   else{
