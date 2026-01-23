@@ -253,7 +253,6 @@ StatusType Huntech::force_join(int forcingSquadId, int forcedSquadId) {
             int squadToDeleteId = squadToDelete->GetSquadId();
             squadAuraTree.Remove(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(squadToDelete->GetSquadAura(),squadToDeleteId,squadToDelete,c));
             squadIdTree.Remove(Pair<int , std::shared_ptr<Squad>>(squadToDeleteId,  squadToDelete));
-            //squadAuraTree.PrintInOrder();
             return StatusType::SUCCESS;
         }
         const int effectiveForcing = forcingSquad->GetSquadAura() + forcingSquad->GetSquadExp() + forcingSquad->GetSquadNen().getEffectiveNenAbility();

@@ -1,7 +1,6 @@
 #pragma once
 #include "Block.h"
 #include <memory>
-
 #include "wet2util.h"
 #include "hunter.h"
 
