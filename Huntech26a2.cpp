@@ -87,12 +87,11 @@ StatusType Huntech::add_hunter(int hunterId,
         return StatusType::INVALID_INPUT;
     }
     try {
+        if(m_uf.HunterExists(hunterId)) {
+            return StatusType::FAILURE;
+        }
         const std::shared_ptr<Squad> squad = this->squadIdTree.Find(Pair<int,std::shared_ptr<Squad>>(squadId , std::make_shared<Squad>(squadId))).second;
         const std::shared_ptr<Hunter> newHunter(std::make_shared<Hunter>(hunterId, squadId, nenType, aura, fightsHad));
-        this->remove_squad_internal(squadId);
-        squad->addHunter(newHunter);
-        this->squadIdTree.Add(Pair<int,std::shared_ptr<Squad>>(squadId, squad));
-        this->squadAuraTree.Add(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(squad->GetSquadAura(),squadId,squad,c));
         //if returned true, we need to do a makeSet
         if(squad->setInitialHunter(newHunter)) {
             this->m_uf.MakeSet(hunterId,newHunter,squad);
@@ -100,6 +99,10 @@ StatusType Huntech::add_hunter(int hunterId,
         else { //if returned false, we need to add the new hunter to the existing set
             this->m_uf.AddToSet(hunterId, newHunter, squad->GetInitialHunter()->GetHunterId());
         }
+        this->remove_squad_internal(squadId);
+        squad->addHunter(newHunter);
+        this->squadIdTree.Add(Pair<int,std::shared_ptr<Squad>>(squadId, squad));
+        this->squadAuraTree.Add(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(squad->GetSquadAura(),squadId,squad,c));
     }
     catch (const std::bad_alloc& e) {
         return StatusType::ALLOCATION_ERROR;
@@ -252,6 +255,7 @@ StatusType Huntech::force_join(int forcingSquadId, int forcedSquadId) {
             int squadToDeleteId = squadToDelete->GetSquadId();
             squadAuraTree.Remove(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(squadToDelete->GetSquadAura(),squadToDeleteId,squadToDelete,c));
             squadIdTree.Remove(Pair<int , std::shared_ptr<Squad>>(squadToDeleteId,  squadToDelete));
+            //squadAuraTree.PrintInOrder();
             return StatusType::SUCCESS;
         }
         const int effectiveForcing = forcingSquad->GetSquadAura() + forcingSquad->GetSquadExp() + forcingSquad->GetSquadNen().getEffectiveNenAbility();

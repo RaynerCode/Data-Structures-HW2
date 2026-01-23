@@ -5,16 +5,12 @@
 UF::UF(): parent(), item_data(), Set_data() {}
 
 void UF::MakeSet(const int key, const std::shared_ptr<Hunter>& item, const std::shared_ptr<Squad>& Set){
-  try{
-    parent.getValue(key); //it should throw an error because key is not in system, if succeeds then WE throw an error
+  if(HunterExists(key)) {
+    throw (std::invalid_argument("id already exists"));
   }
-  catch(std::invalid_argument& e) {
-    parent.insert(key, -1); //-1 indicates that it is the root of the set.
-    item_data.insert (key, hunterNode(item));
-    Set_data.insert(key, Set);
-    return;
-  }
-  throw (std::invalid_argument("id already exists"));
+  parent.insert(key, -1); //-1 indicates that it is the root of the set.
+  item_data.insert(key, hunterNode(item));
+  Set_data.insert(key, Set);
 }
 
 void UF::AddToSet(const int key, const std::shared_ptr<Hunter>& item,const int group_member_key){
@@ -53,8 +49,7 @@ void UF::Union(const int key1,const int key2){
     node1.sub_group_nen += node2.sub_group_nen;
 
     //Update fights had
-    node2.hunter->AddFightsHad(-1 * node1.hunter->GetFightsHad());
-
+    node2.hunter->SetFightsHad(node2.hunter->GetFightsHad() - node1.hunter->GetFightsHad());
     //Update sets
     Set_data.setData(parent_key2, nullptr);
   }
@@ -133,4 +128,8 @@ int UF::FindRoot(const int key){
   }
   PathCompress(path);
   return parent_key;
+}
+
+bool UF::HunterExists(const int hunterId){
+    return item_data.doesExist(hunterId);
 }

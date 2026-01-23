@@ -35,6 +35,8 @@ class UF{
     //Finds the key's set.
     std::shared_ptr<Squad> Find(int key);
 
+    bool HunterExists(int hunterId);
+
     //returns the number of fights a hunter had.
     int GetHunterFightsHad(int key);
 

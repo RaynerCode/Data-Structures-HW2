@@ -11,6 +11,7 @@ private:
 public:
     Hunter(int hunterId, int squadId, const NenAbility& type, int aura, int fightsHad);
     void AddFightsHad(int amt);
+    void SetFightsHad(int fights);
     int GetFightsHad() const;
     int GetAura() const;
     int GetHunterId() const;

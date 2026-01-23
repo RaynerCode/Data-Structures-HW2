@@ -19,6 +19,11 @@ void Hunter::AddFightsHad(const int amt) {
     this->fightsHad += amt;
 }
 
+void Hunter::SetFightsHad(const int fights) {
+    this->fightsHad = fights;
+}
+
+
 int Hunter::GetAura() const {
     return this->aura;
 }

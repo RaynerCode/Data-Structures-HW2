@@ -38,6 +38,7 @@ public:
     hashedArray(const hashedArray& other);
     hashedArray& operator=(const hashedArray& other);
     T& getValue(int key) const;
+    bool doesExist(int key) const;
 };
 
 inline int hash(const int key, const int m) { //up to implementation, currently it is k%m.
@@ -112,6 +113,19 @@ T& hashedArray<T>::getValue(const int key) const {
         curr = curr->right;
     }
     throw(std::invalid_argument("key not found")); //key not in array should really throw an exception
+}
+
+template<typename T>
+bool hashedArray<T>::doesExist(int key) const {
+    int index = hash(key, this->m_size_array);
+    BaseBlock<Pair<int,T>>* curr = m_array[index].head;
+    while(curr != nullptr) {
+        if(curr->data.first == key) {
+            return true;
+        }
+        curr = curr->right;
+    }
+    return false;
 }
 
 template<typename T>

@@ -33,20 +33,19 @@ const T& RankTree<T, Block>::Get_ithRank(int i) const{
 template<typename T, typename Block>
 const T& RankTree<T, Block>::Get_ithRank(int i, Block* curr) const{
   //if we got here, the ith rank surly exists
-  while(true){
-    if(curr->rank < i)
-    {
+  while(curr != nullptr){
+    if (i == curr->rank) {
+      return curr->data;
+    }
+    if (i < curr->rank) {
+      curr = curr->left;
+    }
+    else {
       i -= curr->rank;
       curr = curr->right;
-      continue;
     }
-    if(i < curr->rank)
-    {
-      curr = curr->left;
-      continue;
-    }
-    return curr->data;
   }
+  throw(std::runtime_error("get ith rank hit a nullptr"));
 }
 
 template<typename T, typename Block>
@@ -58,8 +57,9 @@ template<typename T, typename Block>
 void RankTree<T, Block>::PrintInOrder(const Block* root) const {
     if(root == nullptr)
       return;
+    std::cout << "left: ";
     PrintInOrder(root->left);
-    std::cout << *root << " ";
+    std::cout << "aura: " << root->data.value->GetSquadAura() << "id: " << root->data.value->GetSquadId() << " right: ";
     PrintInOrder(root->right);
 }
 
