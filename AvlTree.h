@@ -73,7 +73,7 @@ void AvlTree<T, Block>::Remove(const T& id){
         Update(path);
         return;
     }
-    
+
     //Search The Tree
     Block* curr = this->root;
     while(true){
@@ -110,7 +110,7 @@ void AvlTree<T, Block>::Remove(const T& id){
         }
     }
     //when the while loop above ends, toRem is not in AvlTree
-    
+
     Update(path);
 
 }
@@ -264,12 +264,15 @@ void AvlTree<T, Block>::Reconnect(Block* block, Stack<Block*> &path){
 template<typename T, typename Block>
 Block*& AvlTree<T, Block>::GetMin(Block* toRem, Stack<Block*>& path){
     if(toRem->right->left == nullptr) return toRem->right;
-    Block* curr = toRem ->right;
-    if(curr->left->left == nullptr)
+    Block* curr = toRem->right;
+    if(curr->left->left == nullptr) {
         path.Push(curr);
+        return curr->left;
+    }
     while(curr->left->left !=nullptr) {
         path.Push(curr);
         curr = curr->left;
     }
+    path.Push(curr);
     return curr->left;
 }

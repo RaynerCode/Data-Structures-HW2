@@ -54,8 +54,6 @@ StatusType Huntech::remove_squad(int squadId) {
 }
 
 StatusType Huntech::remove_squad_internal(int squadId) {
-    //remove squad from Tree. the UF isn't changed because this squad becomes numb, it can't be
-    //united with any other squad because union happens through SquadIds.
     if(squadId <= 0) {
         return StatusType::INVALID_INPUT;
     }
