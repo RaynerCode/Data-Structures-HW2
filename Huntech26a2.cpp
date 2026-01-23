@@ -39,6 +39,10 @@ StatusType Huntech::remove_squad(int squadId) {
         //const int idToDelete = squadToDelete.second->GetSquadId();
         squadIdTree.Remove(squadToDelete);
         squadAuraTree.Remove(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(squadToDelete.second->GetSquadAura() ,squadToDelete.second->GetSquadId(),squadToDelete.second,c));
+        if(squadToDelete.second != nullptr && squadToDelete.second->GetInitialHunter() != nullptr){
+            squadToDelete.second->GetInitialHunter()->SetSquad(nullptr);
+        }
+
         squadToDelete.second->kill();
     }
     catch (const std::bad_alloc& e) {
@@ -89,7 +93,7 @@ StatusType Huntech::add_hunter(int hunterId,
             return StatusType::FAILURE;
         }
         const std::shared_ptr<Squad> squad = this->squadIdTree.Find(Pair<int,std::shared_ptr<Squad>>(squadId , std::make_shared<Squad>(squadId))).second;
-        const std::shared_ptr<Hunter> newHunter(std::make_shared<Hunter>(hunterId, squadId, nenType, aura, fightsHad));
+        const std::shared_ptr<Hunter> newHunter(std::make_shared<Hunter>(hunterId, nenType, aura, fightsHad));
         //if returned true, we need to do a makeSet
         if(squad->setInitialHunter(newHunter)) {
             this->m_uf.MakeSet(hunterId,newHunter,squad);
@@ -216,12 +220,11 @@ output_t<int> Huntech::get_ith_collective_aura_squad(const int i) const {
 }
 
 output_t<NenAbility> Huntech::get_partial_nen_ability(const int hunterId) {
-    //return UF.GetPartialNen(id);
     if(hunterId <= 0) {
         return StatusType::INVALID_INPUT;
     }
     try {
-        if(m_uf.Find(hunterId)->isDead()) {
+        if(m_uf.Find(hunterId) == nullptr || m_uf.Find(hunterId)->isDead()) {
             return StatusType::FAILURE;
         }
         return m_uf.GetPartialNen(hunterId);
@@ -238,14 +241,13 @@ output_t<NenAbility> Huntech::get_partial_nen_ability(const int hunterId) {
 }
 
 StatusType Huntech::force_join(int forcingSquadId, int forcedSquadId) {
-
     if(forcingSquadId <= 0 || forcedSquadId <= 0 || forcedSquadId == forcingSquadId) {
         return StatusType::INVALID_INPUT;
     }
     try {
         std::shared_ptr<Squad> forcingSquad = squadIdTree.Find(Pair<int , std::shared_ptr<Squad>>(forcingSquadId,  std::make_shared<Squad>(forcingSquadId))).second;
         std::shared_ptr<Squad> forcedSquad = squadIdTree.Find(Pair<int , std::shared_ptr<Squad>>(forcedSquadId,  std::make_shared<Squad>(forcedSquadId))).second;
-        if(forcingSquad->GetSquadSize() <= 0) {
+        if(forcingSquad == nullptr || forcingSquad->isDead() || forcingSquad->GetSquadSize() <= 0) {
             return StatusType::FAILURE;
         }
         if(forcedSquad->GetSquadSize() <= 0) {
@@ -253,7 +255,6 @@ StatusType Huntech::force_join(int forcingSquadId, int forcedSquadId) {
             int squadToDeleteId = squadToDelete->GetSquadId();
             squadAuraTree.Remove(Triplet<int,int,std::shared_ptr<Squad>,SquadComp>(squadToDelete->GetSquadAura(),squadToDeleteId,squadToDelete,c));
             squadIdTree.Remove(Pair<int , std::shared_ptr<Squad>>(squadToDeleteId,  squadToDelete));
-            //squadAuraTree.PrintInOrder();
             return StatusType::SUCCESS;
         }
         const int effectiveForcing = forcingSquad->GetSquadAura() + forcingSquad->GetSquadExp() + forcingSquad->GetSquadNen().getEffectiveNenAbility();
