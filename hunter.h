@@ -12,7 +12,7 @@ private:
     int aura;
     int fightsHad;
     int parent;
-    std::shared_ptr<Squad> squad;
+    std::weak_ptr<Squad> squad;
     NenAbility hunter_nen;
     NenAbility sub_group_nen;
 public:
